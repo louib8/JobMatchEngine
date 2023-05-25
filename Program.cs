@@ -9,3 +9,6 @@ var jobSeekerFilePath = Path.Combine(Environment.CurrentDirectory, jobSeekerFile
 var jobsFilePath = Path.Combine(Environment.CurrentDirectory, jobsFileName);
 var recommendationController = new RecommendationController();
 recommendationController.GenerateJobRecommendations(jobSeekerFilePath, jobsFilePath);
+
+// To review output data without console closing.
+Console.ReadLine();
