@@ -12,6 +12,16 @@ namespace JobMatchEngine.Controller
         public List<JobSeekerModel> JobSeekers = new List<JobSeekerModel>();
         public List<JobModel> Jobs = new List<JobModel>();
         public List<JobRecommendationModel> JobRecommendations = new List<JobRecommendationModel>();
+        public List<JobRecommendationModel> SortedJobRecommendations = new List<JobRecommendationModel>();
+        
+        public void SortJobRecommendations()
+        {
+            SortedJobRecommendations = JobRecommendations
+                .OrderBy(r => r.JobSeekerId)
+                .ThenByDescending(r => r.MatchingSkillCount)
+                .ThenBy(r => r.JobId)
+                .ToList();
+        }
 
         public List<JobRecommendationModel> GenerateJobRecommendations()
         {
@@ -78,7 +88,7 @@ namespace JobMatchEngine.Controller
                     skills.Add(values[i]);
                 }
 
-                JobSeekers.Add(new JobSeekerModel(values[0]., values[1], skills));
+                JobSeekers.Add(new JobSeekerModel(Int32.Parse(values[0]), values[1], skills));
             }
 
             return JobSeekers;
@@ -121,7 +131,8 @@ namespace JobMatchEngine.Controller
                     skills.Add(values[i]);
                 }
 
-                Jobs.Add(new JobModel(values[0], values[1], skills));
+                // #TODO: This parsing needs to be done in a safer way, will come back
+                Jobs.Add(new JobModel(Int32.Parse(values[0]), values[1], skills));
             }
 
             return Jobs;
