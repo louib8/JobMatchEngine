@@ -9,6 +9,11 @@ namespace JobMatchEngine.Controller
 {
     public static class InputController
     {
+
+        /*
+         * #TODO: Reduce the two reading methods into a single generic method to avoid unnecessary repetition.
+         */
+
         public static List<JobSeekerModel> ReadJobSeekers(string filePath)
         {
             var jobSeekers = new List<JobSeekerModel>();

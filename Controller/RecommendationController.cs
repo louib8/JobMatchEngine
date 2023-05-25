@@ -20,13 +20,18 @@ namespace JobMatchEngine.Controller
 
             JobRecommendations.Clear();
 
+            /*
+             * #TODO: Replace below logic with something more efficient. As input for JobSeekers and Jobs grows, so to will the length of time required to process it.
+             * I believe current time complexity would be O(n^2)
+             */
+
             // Inefficent first, improve later
             foreach(var jobSeeker in JobSeekers)
             {
                 foreach(var job in Jobs)
                 {
-                    var matchingSkillsCount = jobSeeker.Skills.Intersect(job.RequiredSkills);
-                    if (matchingSkillsCount.Count() <= 0)
+                    var matchingSkillsCount = jobSeeker.Skills.Intersect(job.RequiredSkills).Count();
+                    if (matchingSkillsCount <= 0)
                     {
                         continue;
                     }
@@ -36,7 +41,7 @@ namespace JobMatchEngine.Controller
                         jobSeeker.Name,
                         job.ID,
                         job.Title,
-                        matchingSkillsCount.Count()));
+                        matchingSkillsCount));
 
                 }
             }
@@ -48,6 +53,9 @@ namespace JobMatchEngine.Controller
 
         public void SortJobRecommendations()
         {
+            /*
+             * #TODO: This is an inefficient process as we needlessly create a new list. Instead we could utilise the CompareTo override
+             */
             JobRecommendations = JobRecommendations
                 .OrderBy(r => r.JobSeekerId)
                 .ThenByDescending(r => r.MatchingSkillCount)
