@@ -1,5 +1,14 @@
 ﻿// See https://aka.ms/new-console-template for more information
+
+using JobMatchEngine.Controller;
+
 Console.WriteLine("Hello, World!");
+var recommendationController = new RecommendationController();
+recommendationController.ReadJobSeekers(@"G:\C# Dev stuff\JobMatchEngine\Data\jobseekers.csv");
+recommendationController.ReadJobs(@"G:\C# Dev stuff\JobMatchEngine\Data\jobs.csv");
+recommendationController.GenerateJobRecommendations();
+
+Console.ReadLine();
 
 
 
