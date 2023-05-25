@@ -12,9 +12,9 @@ namespace JobMatchEngine.Model
         private string _name;
         private List<string> _skills = new List<string>();
 
-        public string ID;
-        public string Name;
-        public List<string> Skills = new List<string>();
+        public string ID { get => _id; set => _id = value; }
+        public string Name { get => _name; set => _name = value; }
+        public List<string> Skills { get => _skills; set => _skills = value; }
 
 
         public JobSeekerModel(string id, string name, List<string> skills)
