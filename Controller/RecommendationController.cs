@@ -54,7 +54,7 @@ namespace JobMatchEngine.Controller
         public void SortJobRecommendations()
         {
             /*
-             * #TODO: This is an inefficient process as we needlessly create a new list. Instead we could utilise the CompareTo override
+             * #TODO: This is an inefficient process as we needlessly create a new list. Instead we could utilise comparators.
              */
             JobRecommendations = JobRecommendations
                 .OrderBy(r => r.JobSeekerId)
