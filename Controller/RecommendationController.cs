@@ -12,19 +12,12 @@ namespace JobMatchEngine.Controller
         public List<JobSeekerModel> JobSeekers = new List<JobSeekerModel>();
         public List<JobModel> Jobs = new List<JobModel>();
         public List<JobRecommendationModel> JobRecommendations = new List<JobRecommendationModel>();
-        public List<JobRecommendationModel> SortedJobRecommendations = new List<JobRecommendationModel>();
         
-        public void SortJobRecommendations()
+        public void GenerateJobRecommendations(string jobSeekerFilePath, string jobFilePath)
         {
-            SortedJobRecommendations = JobRecommendations
-                .OrderBy(r => r.JobSeekerId)
-                .ThenByDescending(r => r.MatchingSkillCount)
-                .ThenBy(r => r.JobId)
-                .ToList();
-        }
+            JobSeekers = InputController.ReadJobSeekers(jobSeekerFilePath);
+            Jobs = InputController.ReadJobs(jobFilePath);
 
-        public List<JobRecommendationModel> GenerateJobRecommendations()
-        {
             JobRecommendations.Clear();
 
             // Inefficent first, improve later
@@ -47,95 +40,19 @@ namespace JobMatchEngine.Controller
 
                 }
             }
-            
-            return JobRecommendations;
+
+            SortJobRecommendations();
+
+            OutputController.PrintFormattedOutputToConsole(JobRecommendations);
         }
 
-        public List<JobSeekerModel> ReadJobSeekers(string filePath)
+        public void SortJobRecommendations()
         {
-            JobSeekers.Clear();
-
-            if (!File.Exists(filePath))
-            {
-                return JobSeekers;
-            }
-
-            StreamReader reader = new StreamReader(File.OpenRead(filePath));
-
-            if (!reader.EndOfStream)
-            {
-                // Skip the first line which contains column names as they are not required.
-                reader.ReadLine();
-            }
-
-            while (!reader.EndOfStream)
-            {
-                var line = reader.ReadLine();
-                if (line == null) continue;
-                var values = line.Split(',');
-
-
-                // To remove the \" characters from the string - maybe move this to it's own method.
-                var firstSkillIndex = 2;
-                var lastSkillIndex = values.Length - 1;
-                values[firstSkillIndex] = values[firstSkillIndex].Remove(0, 1);
-                values[lastSkillIndex] = values[lastSkillIndex].Remove(values[lastSkillIndex].Length - 1, 1);
-
-                var skills = new List<string>();
-
-                for (int i = 2; i < values.Length; i++)
-                {
-                    skills.Add(values[i]);
-                }
-
-                JobSeekers.Add(new JobSeekerModel(Int32.Parse(values[0]), values[1], skills));
-            }
-
-            return JobSeekers;
-        }
-
-        public List<JobModel> ReadJobs(string filePath)
-        {
-            Jobs.Clear();
-
-            if (!File.Exists(filePath))
-            {
-                return Jobs;
-            }
-
-            StreamReader reader = new StreamReader(File.OpenRead(filePath));
-
-            if (!reader.EndOfStream)
-            {
-                // Skip the first line which contains column names as they are not required.
-                reader.ReadLine();
-            }
-
-            while (!reader.EndOfStream)
-            {
-                var line = reader.ReadLine();
-                if (line == null) continue;
-                var values = line.Split(',');
-
-
-                // To remove the \" characters from the string - maybe move this to it's own method.
-                var firstSkillIndex = 2;
-                var lastSkillIndex = values.Length - 1;
-                values[firstSkillIndex] = values[firstSkillIndex].Remove(0, 1);
-                values[lastSkillIndex] = values[lastSkillIndex].Remove(values[lastSkillIndex].Length - 1, 1);
-
-                var skills = new List<string>();
-
-                for (int i = 2; i < values.Length; i++)
-                {
-                    skills.Add(values[i]);
-                }
-
-                // #TODO: This parsing needs to be done in a safer way, will come back
-                Jobs.Add(new JobModel(Int32.Parse(values[0]), values[1], skills));
-            }
-
-            return Jobs;
+            JobRecommendations = JobRecommendations
+                .OrderBy(r => r.JobSeekerId)
+                .ThenByDescending(r => r.MatchingSkillCount)
+                .ThenBy(r => r.JobId)
+                .ToList();
         }
     }
 }
